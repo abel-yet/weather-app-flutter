@@ -16,5 +16,9 @@ class AppTheme {
         ),
       ),
     ),
+    navigationBarTheme: NavigationBarThemeData(
+      indicatorColor: AppColors.accent,
+      height: 70,
+    )
   );
 }

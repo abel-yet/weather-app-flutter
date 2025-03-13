@@ -12,11 +12,13 @@ void main() async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await dotenv.load();
   setupSL();
-  runApp(const Umbrella());
+  runApp(Umbrella());
 }
 
 class Umbrella extends StatelessWidget {
-  const Umbrella({super.key});
+  Umbrella({super.key});
+
+  final router = appRouter();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class Umbrella extends StatelessWidget {
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         theme: AppTheme.theme,
-        routerConfig: appRouter(),
+        routerConfig: router,
       ),
     );
   }

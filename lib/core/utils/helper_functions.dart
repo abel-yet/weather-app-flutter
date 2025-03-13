@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:umbrella/core/constants/app_colors.dart';
 
 String getDioErrorMessage(DioException exception) {
   switch (exception.type) {
@@ -27,4 +28,18 @@ Widget addHorizontalSpace(double size) {
 
 Widget addVerticalSpace(double size) {
   return SizedBox(height: size);
+}
+
+SnackBar buildSanckBar({
+  required String message,
+  bool isError = false,
+}) {
+  return SnackBar(
+    content: Text(
+      message,
+      style: TextStyle(color: AppColors.secondary),
+    ),
+    backgroundColor: isError ? Colors.redAccent : AppColors.accent,
+    behavior: SnackBarBehavior.floating,
+  );
 }

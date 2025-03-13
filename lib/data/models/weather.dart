@@ -161,6 +161,8 @@ class CurrentCondition {
     final String icon;
     final int code;
 
+    String get iconUrl => "https:$icon".replaceAll("64x64", "128x128");
+
     CurrentCondition({
         required this.text,
         required this.icon,
@@ -426,6 +428,8 @@ class Hour {
 class HourCondition {
     final String icon;
     final int code;
+
+    String get iconUrl => "https:$icon".replaceAll("64x64", "128x128");
 
     HourCondition({
         required this.icon,
