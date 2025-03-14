@@ -6,6 +6,7 @@ import 'package:umbrella/blocs/weather_bloc/weather_bloc.dart';
 import 'package:umbrella/core/constants/app_colors.dart';
 import 'package:umbrella/core/extensions.dart';
 import 'package:umbrella/core/utils/helper_functions.dart';
+import 'package:umbrella/presentation/screens/search_screen.dart';
 import 'package:umbrella/presentation/screens/weather_screen.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -67,7 +68,9 @@ class OnboardingScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        context.goNamed(SearchScreen.routeName);
+                      },
                       child: Text("Search"),
                     ),
                   ),

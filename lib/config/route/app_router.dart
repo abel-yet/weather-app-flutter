@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:umbrella/presentation/scaffold_with_nav_bar.dart';
 import 'package:umbrella/presentation/screens/onboarding_screen.dart';
+import 'package:umbrella/presentation/screens/search_screen.dart';
 import 'package:umbrella/presentation/screens/weather_screen.dart';
 
 GoRouter appRouter({String? initialLocation}) {
@@ -35,10 +36,9 @@ GoRouter appRouter({String? initialLocation}) {
             routes: [
               GoRoute(
                 path: "/search",
+                name: SearchScreen.routeName,
                 builder: (context, state) {
-                  return Center(
-                    child: Text("search screen"),
-                  );
+                  return SearchScreen();
                 },
               ),
             ],

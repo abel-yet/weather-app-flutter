@@ -12,6 +12,8 @@ String getDioErrorMessage(DioException exception) {
       return "No internet connection";
     case DioExceptionType.badResponse:
       switch (exception.response?.statusCode) {
+        case 400:
+          return "No location found";
         case 403:
           return "API key has exceeded calls per month quota";
         default:

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:umbrella/blocs/weather_bloc/weather_bloc.dart';
 import 'package:umbrella/core/constants/app_colors.dart';
 import 'package:umbrella/core/extensions.dart';
 import 'package:umbrella/core/utils/helper_functions.dart';
+import 'package:umbrella/presentation/screens/search_screen.dart';
 import 'package:umbrella/presentation/widgets/hourly_forecast.dart';
 import 'package:umbrella/presentation/widgets/weather_detail_card.dart';
 
@@ -17,12 +19,7 @@ class WeatherScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: BlocConsumer<WeatherBloc, WeatherState>(
-        listener: (context, state) {
-          if (state is WeatherError) {
-            ScaffoldMessenger.of(context).showSnackBar(buildSanckBar(message: state.errorMessage, isError: true));
-          }
-        },
+      child: BlocBuilder<WeatherBloc, WeatherState>(
         builder: (context, state) {
           if (state is WeatherLoading) {
             return Center(
@@ -33,12 +30,62 @@ class WeatherScreen extends StatelessWidget {
             );
           }
 
+          if (state is WeatherInital) {
+            return _buildInitialUI(context);
+          }
+
           if (state is WeatherFetched) {
             return _buildWeatherUI(context, state);
           }
 
+          if (state is WeatherError) {
+            return _buildErrorUI(context, state);
+          }
+
           return Container();
         },
+      ),
+    );
+  }
+
+  Widget _buildInitialUI(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: context.width * .05),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          FaIcon(
+            FontAwesomeIcons.cloud,
+            size: context.width * .25,
+          ),
+          addVerticalSpace(context.width * .05),
+          Text(
+            "Get started, search by city or use your current location.",
+            style: TextStyle(fontFamily: "Russo One", fontSize: 18),
+            textAlign: TextAlign.center,
+          ),
+          addVerticalSpace(context.width * .1),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () {
+                context.read<WeatherBloc>().add(WeatherFetchedByLocation());
+              },
+              child: Text("Find Me"),
+            ),
+          ),
+          addVerticalSpace(context.width * .02),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () {
+                context.goNamed(SearchScreen.routeName);
+              },
+              child: Text("Search"),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -209,6 +256,52 @@ class WeatherScreen extends StatelessWidget {
               ],
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorUI(BuildContext context, WeatherError state) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: context.width * .05),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: context.width * .02,
+        children: [
+          FaIcon(
+            FontAwesomeIcons.triangleExclamation,
+            size: context.width * .25,
+            color: Colors.red,
+          ),
+          Text(
+            state.errorMessage,
+            style: TextStyle(fontFamily: "Russo One", fontSize: 18),
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            "Please try again",
+            style: TextStyle(fontFamily: "Russo One", fontSize: 18),
+          ),
+          addVerticalSpace(context.width * .1),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () {
+                context.read<WeatherBloc>().add(WeatherFetchedByLocation());
+              },
+              child: Text("Find Me"),
+            ),
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () {
+                context.goNamed(SearchScreen.routeName);
+              },
+              child: Text("Search"),
+            ),
+          ),
         ],
       ),
     );
