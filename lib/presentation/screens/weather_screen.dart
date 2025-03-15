@@ -278,6 +278,8 @@ class WeatherScreen extends StatelessWidget {
             state.errorMessage,
             style: TextStyle(fontFamily: "Russo One", fontSize: 18),
             textAlign: TextAlign.center,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
           ),
           Text(
             "Please try again",
