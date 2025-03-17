@@ -54,6 +54,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
                 Expanded(
                   child: TextField(
+                    autofocus: true,
                     controller: _textEditingController,
                     decoration: InputDecoration(
                       hintText: "Enter city name",

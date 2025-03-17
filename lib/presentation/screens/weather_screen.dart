@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:umbrella/blocs/settings_bloc/settings_bloc.dart';
 import 'package:umbrella/blocs/weather_bloc/weather_bloc.dart';
 import 'package:umbrella/core/constants/app_colors.dart';
 import 'package:umbrella/core/extensions.dart';
@@ -11,10 +12,23 @@ import 'package:umbrella/presentation/screens/search_screen.dart';
 import 'package:umbrella/presentation/widgets/hourly_forecast.dart';
 import 'package:umbrella/presentation/widgets/weather_detail_card.dart';
 
-class WeatherScreen extends StatelessWidget {
+class WeatherScreen extends StatefulWidget {
   static const String routeName = "Weather";
 
   const WeatherScreen({super.key});
+
+  @override
+  State<WeatherScreen> createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends State<WeatherScreen> {
+  @override
+  void initState() {
+    super.initState();
+    if (context.read<SettingsBloc>().state.defaultLocation != null && context.read<WeatherBloc>().state is WeatherInital) {
+      context.read<WeatherBloc>().add(WeatherFetchedByCityName(cityName: context.read<SettingsBloc>().state.defaultLocation!));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +49,9 @@ class WeatherScreen extends StatelessWidget {
           }
 
           if (state is WeatherFetched) {
+            if(context.read<SettingsBloc>().state.defaultLocation == null) {
+              context.read<SettingsBloc>().add(SetDefaultLocation(defaultLocation: state.weather.location.name));
+            }
             return _buildWeatherUI(context, state);
           }
 
@@ -130,11 +147,16 @@ class WeatherScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        "${(state.weather.current.tempC).toInt()}°",
-                        style: context.textTheme.displayLarge?.copyWith(
-                          fontFamily: "Russo One",
-                        ),
+                      BlocBuilder<SettingsBloc, SettingsState>(
+                        builder: (context, settings) {
+                          final temp = settings.tempUnit == "Celsius" ? state.weather.current.tempC : state.weather.current.tempF;
+                          return Text(
+                            "${temp.toInt()}°",
+                            style: context.textTheme.displayLarge?.copyWith(
+                              fontFamily: "Russo One",
+                            ),
+                          );
+                        },
                       ),
                       Text(
                         state.weather.current.condition.text,
@@ -207,11 +229,16 @@ class WeatherScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          Text(
-                            "${state.weather.current.feelslikeC.toInt()}°",
-                            style: TextStyle(
-                              fontSize: 24,
-                            ),
+                          BlocBuilder<SettingsBloc, SettingsState>(
+                            builder: (context, settings) {
+                              final temp = settings.tempUnit == "Celsius" ? state.weather.current.feelslikeC : state.weather.current.feelslikeF;
+                              return Text(
+                                "${temp.toInt()}°",
+                                style: TextStyle(
+                                  fontSize: 24,
+                                ),
+                              );
+                            },
                           )
                         ],
                       ),
@@ -242,11 +269,16 @@ class WeatherScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          Text(
-                            "${state.weather.current.visKm.toInt()} Km",
-                            style: TextStyle(
-                              fontSize: 24,
-                            ),
+                          BlocBuilder<SettingsBloc, SettingsState>(
+                            builder: (context, settings) {
+                              final visibility = settings.visibilityUnit == 'km' ? "${state.weather.current.visKm.toInt()} Km" : "${state.weather.current.visMiles.toInt()} m";
+                              return Text(
+                                visibility,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                ),
+                              );
+                            },
                           )
                         ],
                       ),

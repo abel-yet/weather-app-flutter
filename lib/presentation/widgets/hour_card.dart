@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:umbrella/blocs/settings_bloc/settings_bloc.dart';
 import 'package:umbrella/core/extensions.dart';
 import 'package:umbrella/data/models/weather.dart';
 
@@ -26,9 +28,14 @@ class HourCard extends StatelessWidget {
               height: context.width * .1,
               fit: BoxFit.contain,
             ),
-            Text(
-              "${hour.tempC.toInt()}°",
-              style: TextStyle(fontWeight: FontWeight.bold),
+            BlocBuilder<SettingsBloc, SettingsState>(
+              builder: (context, state) {
+                final temp = state.tempUnit == "Celsius" ? hour.tempC : hour.tempF;
+                return Text(
+                  "${temp.toInt()}°",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                );
+              },
             )
           ],
         ),

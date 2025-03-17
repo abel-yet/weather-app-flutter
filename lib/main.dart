@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:umbrella/blocs/search_history/search_history_bloc.dart';
+import 'package:umbrella/blocs/settings_bloc/settings_bloc.dart';
 import 'package:umbrella/blocs/weather_bloc/weather_bloc.dart';
 import 'package:umbrella/config/route/app_router.dart';
 import 'package:umbrella/config/theme/app_theme.dart';
@@ -12,7 +13,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await dotenv.load();
-  setupSL();
+  await setupSL();
+  await sl.allReady();
   runApp(Umbrella());
 }
 
@@ -30,6 +32,9 @@ class Umbrella extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => sl<SearchHistoryBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<SettingsBloc>(),
         ),
       ],
       child: MaterialApp.router(
